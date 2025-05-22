@@ -16,13 +16,13 @@ const SafeLink: React.FC<{
 	className?: string;
 }> = ({ href, children, className }) => (
 	<a
-		href={href}
 		className={className}
-		onClick={(e) => {
-			e.preventDefault();
+		href={href}
+		style={{ color: "inherit", textDecoration: "none" }}
+		onClick={(event) => {
+			event.preventDefault();
 			console.log(`Navigate to: ${href}`);
 		}}
-		style={{ color: "inherit", textDecoration: "none" }}
 	>
 		{children}
 	</a>
@@ -40,7 +40,7 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<{
-	items: { label: string; href?: string }[];
+	items: Array<{ label: string; href?: string }>;
 }>;
 
 // Button styling utility
@@ -61,8 +61,8 @@ export const Default: Story = {
 	render: ({ items }) => (
 		<Breadcrumb>
 			<BreadcrumbList>
-				{items.map((item, idx) => (
-					<React.Fragment key={idx}>
+				{items.map((item, index) => (
+					<React.Fragment key={index}>
 						<BreadcrumbItem>
 							{item.href ? (
 								<BreadcrumbLink asChild>
@@ -72,7 +72,7 @@ export const Default: Story = {
 								<BreadcrumbPage>{item.label}</BreadcrumbPage>
 							)}
 						</BreadcrumbItem>
-						{idx < items.length - 1 && <BreadcrumbSeparator />}
+						{index < items.length - 1 && <BreadcrumbSeparator />}
 					</React.Fragment>
 				))}
 			</BreadcrumbList>
@@ -91,12 +91,12 @@ export const ButtonStyle: Story = {
 	render: ({ items }) => (
 		<Breadcrumb>
 			<BreadcrumbList className={buttonStyles.list}>
-				{items.map((item, idx) => (
-					<React.Fragment key={idx}>
+				{items.map((item, index) => (
+					<React.Fragment key={index}>
 						<BreadcrumbItem>
 							{item.href ? (
 								<BreadcrumbLink asChild>
-									<SafeLink href={item.href} className={buttonStyles.link}>
+									<SafeLink className={buttonStyles.link} href={item.href}>
 										{item.label}
 									</SafeLink>
 								</BreadcrumbLink>
@@ -106,7 +106,7 @@ export const ButtonStyle: Story = {
 								</BreadcrumbPage>
 							)}
 						</BreadcrumbItem>
-						{idx < items.length - 1 && <BreadcrumbSeparator />}
+						{index < items.length - 1 && <BreadcrumbSeparator />}
 					</React.Fragment>
 				))}
 			</BreadcrumbList>
@@ -128,8 +128,8 @@ export const LongPath: Story = {
 	render: ({ items }) => (
 		<Breadcrumb>
 			<BreadcrumbList>
-				{items.map((item, idx) => (
-					<React.Fragment key={idx}>
+				{items.map((item, index) => (
+					<React.Fragment key={index}>
 						<BreadcrumbItem>
 							{item.href ? (
 								<BreadcrumbLink asChild>
@@ -139,7 +139,7 @@ export const LongPath: Story = {
 								<BreadcrumbPage>{item.label}</BreadcrumbPage>
 							)}
 						</BreadcrumbItem>
-						{idx < items.length - 1 && <BreadcrumbSeparator />}
+						{index < items.length - 1 && <BreadcrumbSeparator />}
 					</React.Fragment>
 				))}
 			</BreadcrumbList>

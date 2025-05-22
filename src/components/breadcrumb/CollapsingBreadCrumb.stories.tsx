@@ -7,14 +7,7 @@ import {
 	createRootRoute,
 	createRoute,
 	createRouter,
-	Outlet,
 } from "@tanstack/react-router";
-
-// Router setup for all stories - matching your working pattern
-const createStorybookRouter = (initialPath = "/") => {
-	// This function is no longer used, keeping for reference
-	return null;
-};
 
 // Wrapper component for router context
 const RouterWrapper: React.FC<{
@@ -105,6 +98,7 @@ const meta = {
 		layout: "centered",
 	},
 	decorators: [
+		// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 		(Story) => (
 			<RouterWrapper>
 				<Story />
@@ -155,20 +149,22 @@ export const Collapsed: Story = {
 
 export const Interactive: Story = {
 	render: () => {
+		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const [currentPath, setCurrentPath] = React.useState("/dashboard/reports");
 
+		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const items = React.useMemo(() => {
 			const pathSegments = currentPath.split("/").filter(Boolean);
-			const breadcrumbs: { label: string; href?: string }[] = [
+			const breadcrumbs: Array<{ label: string; href?: string }> = [
 				{ label: "Home", href: "/" },
 			];
 
 			let path = "";
-			pathSegments.forEach((segment, idx) => {
+			pathSegments.forEach((segment, index) => {
 				path += `/${segment}`;
 				const label = segment.charAt(0).toUpperCase() + segment.slice(1);
 
-				if (idx === pathSegments.length - 1) {
+				if (index === pathSegments.length - 1) {
 					breadcrumbs.push({ label });
 				} else {
 					breadcrumbs.push({ label, href: path });
@@ -183,19 +179,39 @@ export const Interactive: Story = {
 				<div style={{ marginBottom: "20px" }}>
 					<h4>Navigate to test breadcrumb</h4>
 					<div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-						<button onClick={() => setCurrentPath("/")}>Home</button>
-						<button onClick={() => setCurrentPath("/dashboard")}>
+						<button
+							onClick={() => {
+								setCurrentPath("/");
+							}}
+						>
+							Home
+						</button>
+						<button
+							onClick={() => {
+								setCurrentPath("/dashboard");
+							}}
+						>
 							Dashboard
 						</button>
-						<button onClick={() => setCurrentPath("/dashboard/reports")}>
+						<button
+							onClick={() => {
+								setCurrentPath("/dashboard/reports");
+							}}
+						>
 							Reports
 						</button>
 						<button
-							onClick={() => setCurrentPath("/dashboard/reports/analytics")}
+							onClick={() => {
+								setCurrentPath("/dashboard/reports/analytics");
+							}}
 						>
 							Analytics
 						</button>
-						<button onClick={() => setCurrentPath("/products/electronics")}>
+						<button
+							onClick={() => {
+								setCurrentPath("/products/electronics");
+							}}
+						>
 							Electronics
 						</button>
 					</div>

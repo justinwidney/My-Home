@@ -1,6 +1,6 @@
 import React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import { ChevronRight, MoreHorizontal, Minus } from "lucide-react";
+import { MoreHorizontal, Minus } from "lucide-react";
 import { cn } from "./../../lib/utils";
 import { FlexibleDropdown, type DropdownItem } from "../Menu/DropDownMenu";
 
@@ -63,10 +63,10 @@ const BreadcrumbPage = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<span
 		ref={ref}
-		role="link"
-		aria-disabled="true"
 		aria-current="page"
+		aria-disabled="true"
 		className={cn("font-normal text-foreground", className)}
+		role="link"
 		{...props}
 	/>
 ));
@@ -76,11 +76,11 @@ const BreadcrumbSeparator = ({
 	children,
 	className,
 	...props
-}: React.ComponentProps<"li">) => (
+}: React.ComponentProps<"li">): React.ReactElement => (
 	<li
-		role="presentation"
 		aria-hidden="true"
 		className={cn("[&>svg]:w-3.5 [&>svg]:h-3.5", className)}
+		role="presentation"
 		{...props}
 	>
 		{children ?? <Minus />}
@@ -90,7 +90,7 @@ BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 
 // Enhanced BreadcrumbEllipsis with dropdown support using FlexibleDropdown
 interface BreadcrumbEllipsisProps extends React.ComponentProps<"span"> {
-	items?: DropdownItem[];
+	items?: Array<DropdownItem>;
 	onItemSelect?: (item: DropdownItem) => void;
 	align?: "start" | "center" | "end";
 	side?: "top" | "right" | "bottom" | "left";
@@ -101,17 +101,16 @@ const BreadcrumbEllipsis = ({
 	items,
 	onItemSelect,
 	align = "center",
-	side = "bottom",
 	title,
 	...props
-}: BreadcrumbEllipsisProps) => {
+}: BreadcrumbEllipsisProps): React.ReactElement => {
 	// If no items provided, render the original ellipsis
 	if (!items || items.length === 0) {
 		return (
 			<span
-				role="presentation"
 				aria-hidden="true"
 				className={cn("flex h-9 w-9 items-center justify-center", className)}
+				role="presentation"
 				title={title}
 				{...props}
 			>
@@ -124,12 +123,12 @@ const BreadcrumbEllipsis = ({
 	// Use your existing FlexibleDropdown component
 	return (
 		<FlexibleDropdown
-			variant="ellipsis"
-			items={items}
-			onItemSelect={onItemSelect}
-			ellipsisTitle={title}
 			align={align}
 			className={className}
+			ellipsisTitle={title}
+			items={items}
+			variant="ellipsis"
+			onItemSelect={onItemSelect}
 		/>
 	);
 };

@@ -1,4 +1,3 @@
-import React from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ChevronDown, MoreHorizontal } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -13,7 +12,7 @@ export interface DropdownItem {
 }
 
 interface FlexibleDropdownProps {
-	items: DropdownItem[];
+	items: Array<DropdownItem>;
 	// Variant determines the trigger type
 	variant: "ellipsis" | "button";
 
@@ -46,7 +45,7 @@ export const FlexibleDropdown: React.FC<FlexibleDropdownProps> = ({
 	side = "bottom",
 	onItemSelect,
 }) => {
-	const handleItemSelect = (item: DropdownItem) => {
+	const handleItemSelect = (item: DropdownItem): void => {
 		if (item.disabled) return;
 
 		if (item.onClick) {
@@ -58,11 +57,14 @@ export const FlexibleDropdown: React.FC<FlexibleDropdownProps> = ({
 		}
 	};
 
-	const renderTrigger = () => {
+	const renderTrigger = (): React.ReactNode => {
 		if (variant === "ellipsis") {
 			return (
 				<DropdownMenu.Trigger asChild>
 					<button
+						aria-label="More navigation options"
+						disabled={disabled}
+						title={ellipsisTitle}
 						className={cn(
 							// Default ellipsis styles (only applied if no custom className provided)
 							!className &&
@@ -70,9 +72,6 @@ export const FlexibleDropdown: React.FC<FlexibleDropdownProps> = ({
 							// Always apply the custom className
 							className
 						)}
-						disabled={disabled}
-						title={ellipsisTitle}
-						aria-label="More navigation options"
 					>
 						<MoreHorizontal size={16} />
 					</button>
@@ -99,16 +98,16 @@ export const FlexibleDropdown: React.FC<FlexibleDropdownProps> = ({
 						opacity: disabled ? 0.5 : 1,
 						transition: "all 0.15s ease",
 					}}
-					onMouseEnter={(e) => {
+					onMouseEnter={(event_) => {
 						if (!disabled) {
-							e.currentTarget.style.backgroundColor = "#f8fafc";
-							e.currentTarget.style.borderColor = "#cbd5e1";
+							event_.currentTarget.style.backgroundColor = "#f8fafc";
+							event_.currentTarget.style.borderColor = "#cbd5e1";
 						}
 					}}
-					onMouseLeave={(e) => {
+					onMouseLeave={(event_) => {
 						if (!disabled) {
-							e.currentTarget.style.backgroundColor = "#ffffff";
-							e.currentTarget.style.borderColor = "#e2e8f0";
+							event_.currentTarget.style.backgroundColor = "#ffffff";
+							event_.currentTarget.style.borderColor = "#e2e8f0";
 						}
 					}}
 				>
@@ -126,8 +125,8 @@ export const FlexibleDropdown: React.FC<FlexibleDropdownProps> = ({
 
 			<DropdownMenu.Portal>
 				<DropdownMenu.Content
-					className={cn("dropdown-content", contentClassName)}
 					align={align}
+					className={cn("dropdown-content", contentClassName)}
 					side={side}
 					sideOffset={4}
 					style={{
@@ -148,7 +147,6 @@ export const FlexibleDropdown: React.FC<FlexibleDropdownProps> = ({
 							key={`${item.value}-${index}`}
 							className="dropdown-item"
 							disabled={item.disabled}
-							onSelect={() => handleItemSelect(item)}
 							style={{
 								fontSize: "14px",
 								padding: "8px 12px",
@@ -160,15 +158,18 @@ export const FlexibleDropdown: React.FC<FlexibleDropdownProps> = ({
 								userSelect: "none",
 								transition: "background-color 0.15s ease",
 							}}
-							onMouseEnter={(e) => {
+							onMouseEnter={(event_) => {
 								if (!item.disabled) {
-									e.currentTarget.style.backgroundColor = "#f1f5f9";
+									event_.currentTarget.style.backgroundColor = "#f1f5f9";
 								}
 							}}
-							onMouseLeave={(e) => {
+							onMouseLeave={(event_) => {
 								if (!item.disabled) {
-									e.currentTarget.style.backgroundColor = "transparent";
+									event_.currentTarget.style.backgroundColor = "transparent";
 								}
+							}}
+							onSelect={() => {
+								handleItemSelect(item);
 							}}
 						>
 							{item.label}

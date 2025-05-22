@@ -17,7 +17,7 @@ interface BreadcrumbItem {
 }
 
 interface SmartBreadcrumbProps {
-	items: BreadcrumbItem[];
+	items: Array<BreadcrumbItem>;
 	maxItems?: number;
 	separator?: React.ReactNode;
 	className?: string;
@@ -36,35 +36,44 @@ export function SmartBreadcrumb({
 	separator,
 	className,
 	onItemClick,
-}: SmartBreadcrumbProps) {
+}: SmartBreadcrumbProps): React.ReactElement | null {
 	// Early return for empty or invalid items
+
+	const handleItemClick = React.useCallback(
+		(item: BreadcrumbItem, index: number): void => {
+			if (onItemClick) {
+				onItemClick(item, index);
+			}
+		},
+		[onItemClick]
+	);
+
+	const shouldCollapse = items && items.length > maxItems;
+	const first = items && items.length > 0 ? items[0]! : undefined;
+	const last = items && items.length > 0 ? items[items.length - 1]! : undefined;
+
+	// Get the collapsed items (all items between first and last)
+	const collapsedItems = React.useMemo(() => {
+		if (!shouldCollapse || !items) return [];
+
+		return items.slice(1, -1).map((item, index) => ({
+			label: item.label,
+			value: item.label,
+			href: item.href,
+			onClick: item.href
+				? undefined
+				: // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+					() => {
+						handleItemClick(item, index + 1);
+					},
+		}));
+	}, [items, shouldCollapse, handleItemClick]);
+
 	if (!items || items.length === 0) {
 		return null;
 	}
 
-	const shouldCollapse = items.length > maxItems;
-	const first = items[0]!; // Safe because we checked length > 0
-	const last = items[items.length - 1]!; // Safe because we checked length > 0
-
-	const handleItemClick = (item: BreadcrumbItem, index: number) => {
-		if (onItemClick) {
-			onItemClick(item, index);
-		}
-	};
-
-	// Get the collapsed items (all items between first and last)
-	const collapsedItems = React.useMemo(() => {
-		if (!shouldCollapse) return [];
-
-		return items.slice(1, -1).map((item, idx) => ({
-			label: item.label,
-			value: item.label,
-			href: item.href,
-			onClick: item.href ? undefined : () => handleItemClick(item, idx + 1),
-		}));
-	}, [items, shouldCollapse, handleItemClick]);
-
-	const handleDropdownItemSelect = (dropdownItem: DropdownItem) => {
+	const handleDropdownItemSelect = (dropdownItem: DropdownItem): void => {
 		if (dropdownItem.href) {
 			// For items with href, find the original item and its index for the callback
 			const originalIndex = items.findIndex(
@@ -81,7 +90,7 @@ export function SmartBreadcrumb({
 		item: BreadcrumbItem,
 		index: number,
 		isLast: boolean = false
-	) => {
+	): React.ReactNode => {
 		if (isLast) {
 			return (
 				<BreadcrumbItem key={index}>
@@ -96,7 +105,12 @@ export function SmartBreadcrumb({
 			return (
 				<BreadcrumbItem key={index}>
 					<BreadcrumbLink asChild className={buttonStyles.link}>
-						<Link to={item.href} onClick={() => handleItemClick(item, index)}>
+						<Link
+							to={item.href}
+							onClick={() => {
+								handleItemClick(item, index);
+							}}
+						>
 							{item.label}
 						</Link>
 					</BreadcrumbLink>
@@ -117,10 +131,10 @@ export function SmartBreadcrumb({
 		return (
 			<Breadcrumb className={className}>
 				<BreadcrumbList>
-					{items.map((item, idx) => (
-						<React.Fragment key={idx}>
-							{idx > 0 && (separator || <BreadcrumbSeparator />)}
-							{renderBreadcrumbItem(item, idx, idx === items.length - 1)}
+					{items.map((item, index) => (
+						<React.Fragment key={index}>
+							{index > 0 && (separator || <BreadcrumbSeparator />)}
+							{renderBreadcrumbItem(item, index, index === items.length - 1)}
 						</React.Fragment>
 					))}
 				</BreadcrumbList>
@@ -135,7 +149,7 @@ export function SmartBreadcrumb({
 		<Breadcrumb className={className}>
 			<BreadcrumbList>
 				{/* First item */}
-				{renderBreadcrumbItem(first, 0, false)}
+				{first && renderBreadcrumbItem(first, 0, false)}
 
 				{/* Show ellipsis dropdown only if there are items to collapse */}
 				{collapsedCount > 0 && (
@@ -145,15 +159,15 @@ export function SmartBreadcrumb({
 							<BreadcrumbEllipsis
 								className={buttonStyles.link}
 								items={collapsedItems}
-								onItemSelect={handleDropdownItemSelect}
 								title={`${collapsedCount} more ${collapsedCount === 1 ? "item" : "items"}`}
+								onItemSelect={handleDropdownItemSelect}
 							/>
 						</BreadcrumbItem>
 					</>
 				)}
 
 				{/* Last item (if different from first) */}
-				{items.length > 1 && (
+				{items.length > 1 && last && (
 					<>
 						{separator || <BreadcrumbSeparator />}
 						{renderBreadcrumbItem(last, items.length - 1, true)}

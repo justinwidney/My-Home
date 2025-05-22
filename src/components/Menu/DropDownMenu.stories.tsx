@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
 import { FlexibleDropdown } from "./DropDownMenu";
 
 const meta = {
@@ -17,7 +16,15 @@ type Story = StoryObj<typeof FlexibleDropdown>;
 
 export const ShowcaseAll: Story = {
 	render: () => {
-		const sampleItems = [
+		type DropdownItem = {
+			label: string;
+			value: string;
+			href?: string;
+			disabled?: boolean;
+			onClick?: () => void;
+		};
+
+		const sampleItems: Array<DropdownItem> = [
 			{ label: "Dashboard", value: "dashboard", href: "/dashboard" },
 			{ label: "Products", value: "products", href: "/products" },
 			{ label: "Analytics", value: "analytics", href: "/analytics" },
@@ -26,11 +33,13 @@ export const ShowcaseAll: Story = {
 			{
 				label: "Custom Action",
 				value: "custom",
-				onClick: () => alert("Custom action clicked!"),
+				onClick: (): void => {
+					alert("Custom action clicked!");
+				},
 			},
 		];
 
-		const handleItemSelect = (item: any) => {
+		const handleItemSelect = (item: DropdownItem): void => {
 			console.log("Selected item:", item);
 			if (item.href) {
 				console.log("Would navigate to:", item.href);
@@ -70,9 +79,9 @@ export const ShowcaseAll: Story = {
 						}}
 					>
 						<FlexibleDropdown
-							variant="ellipsis"
-							items={sampleItems}
 							ellipsisTitle="More navigation options"
+							items={sampleItems}
+							variant="ellipsis"
 							onItemSelect={handleItemSelect}
 						/>
 					</div>
@@ -104,9 +113,9 @@ export const ShowcaseAll: Story = {
 						}}
 					>
 						<FlexibleDropdown
-							variant="button"
-							items={sampleItems}
 							buttonLabel="Navigation"
+							items={sampleItems}
+							variant="button"
 							onItemSelect={handleItemSelect}
 						/>
 					</div>
@@ -138,10 +147,10 @@ export const ShowcaseAll: Story = {
 						}}
 					>
 						<FlexibleDropdown
-							variant="button"
-							items={sampleItems}
-							buttonLabel="Actions"
 							buttonIcon="⚙️"
+							buttonLabel="Actions"
+							items={sampleItems}
+							variant="button"
 							onItemSelect={handleItemSelect}
 						/>
 					</div>
@@ -173,10 +182,10 @@ export const ShowcaseAll: Story = {
 						}}
 					>
 						<FlexibleDropdown
-							variant="button"
-							items={sampleItems}
-							buttonLabel="Options"
 							align="end"
+							buttonLabel="Options"
+							items={sampleItems}
+							variant="button"
 							onItemSelect={handleItemSelect}
 						/>
 					</div>
@@ -208,9 +217,9 @@ export const ShowcaseAll: Story = {
 						}}
 					>
 						<FlexibleDropdown
-							variant="button"
-							items={[]}
 							buttonLabel="No Items"
+							items={[]}
+							variant="button"
 							onItemSelect={handleItemSelect}
 						/>
 					</div>
@@ -242,10 +251,10 @@ export const ShowcaseAll: Story = {
 						}}
 					>
 						<FlexibleDropdown
-							variant="button"
-							items={sampleItems}
+							disabled
 							buttonLabel="Disabled"
-							disabled={true}
+							items={sampleItems}
+							variant="button"
 							onItemSelect={handleItemSelect}
 						/>
 					</div>
