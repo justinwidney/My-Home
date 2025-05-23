@@ -1,20 +1,40 @@
-import React, { useEffect, useRef, ReactNode } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { GripVertical } from "lucide-react";
 import {
-	draggable,
-	dropTargetForElements,
+	draggable as _draggable,
+	dropTargetForElements as _dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 
 export interface DragData {
 	type: string;
 	id: string;
-	[key: string]: any;
+	[key: string]: unknown;
 }
+
+// define the shape once
+interface DraggableOptions<T = unknown> {
+	element: HTMLElement;
+	dragHandle?: HTMLElement;
+	getInitialData: () => T;
+}
+
+// cast the untyped import to a typed signature
+const draggable = _draggable as (
+	options: DraggableOptions<DragData>
+) => () => void;
+
+const dropTargetForElements = _dropTargetForElements as <T = unknown>(options: {
+	element: HTMLElement;
+	// eslint-disable-next-line no-use-before-define
+	getData: () => T;
+	// eslint-disable-next-line no-use-before-define
+	canDrop?: (event_: { source: { data: T } }) => boolean;
+}) => () => void;
 
 export interface DropData {
 	type: string;
 	id: string;
-	[key: string]: any;
+	[key: string]: unknown;
 }
 
 export interface DraggableWrapperProps {
@@ -51,16 +71,19 @@ export const DraggableWrapper: React.FC<DraggableWrapperProps> = ({
 
 	useEffect(() => {
 		const element = elementRef.current;
-		const dragHandle = dragHandleRef.current;
+		const handle = dragHandleRef.current;
 
 		if (!element) return;
 
-		// Setup draggable
-		const draggableCleanup = draggable({
-			element,
-			dragHandle: showDragHandle ? dragHandle : element,
-			getInitialData: () => dragData,
-		});
+		// Setup draggable only if element (and dragHandle if needed) are not null
+		let draggableCleanup: (() => void) | undefined;
+		if (!showDragHandle || handle) {
+			draggableCleanup = draggable({
+				element,
+				dragHandle: showDragHandle ? handle! : element,
+				getInitialData: () => dragData,
+			}) as () => void; // ← cast from unknown → () => void
+		}
 
 		// Setup drop target if dropData is provided
 		let dropTargetCleanup: (() => void) | undefined;
@@ -69,18 +92,17 @@ export const DraggableWrapper: React.FC<DraggableWrapperProps> = ({
 				element,
 				getData: () => dropData,
 				canDrop: canDrop
-					? ({ source }) => canDrop(source.data as DragData)
+					? ({ source }): boolean => canDrop(source.data as DragData)
 					: undefined,
-			});
+			}) as () => void; // ← same here
 		}
-
-		return () => {
-			draggableCleanup();
+		return (): void => {
+			draggableCleanup?.();
 			dropTargetCleanup?.();
 		};
 	}, [dragData, dropData, canDrop, showDragHandle]);
 
-	const getDragHandleClasses = () => {
+	const getDragHandleClasses = (): string => {
 		const baseClasses =
 			"cursor-grab active:cursor-grabbing p-1 hover:bg-gray-100 rounded transition-opacity";
 		const positionClasses = {
@@ -92,7 +114,7 @@ export const DraggableWrapper: React.FC<DraggableWrapperProps> = ({
 		return `${baseClasses} ${positionClasses[dragHandlePosition]} ${dragHandleClassName}`;
 	};
 
-	const getWrapperClasses = () => {
+	const getWrapperClasses = (): string => {
 		const baseClasses = "transition-all";
 		const stateClasses = [];
 
@@ -107,14 +129,14 @@ export const DraggableWrapper: React.FC<DraggableWrapperProps> = ({
 		return `${baseClasses} ${stateClasses.join(" ")} ${className}`;
 	};
 
-	const renderDragHandle = () => {
+	const renderDragHandle = (): React.ReactNode => {
 		if (!showDragHandle) return null;
 
 		return (
 			<div
 				ref={dragHandleRef}
-				className={getDragHandleClasses()}
 				aria-label="Drag handle"
+				className={getDragHandleClasses()}
 			>
 				<GripVertical className="w-4 h-4 text-gray-400" />
 			</div>

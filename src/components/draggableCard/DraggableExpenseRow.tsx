@@ -1,6 +1,5 @@
-import React from "react";
-import { ExpenseRow, ExpenseRowProps } from "./ExpenseRow";
-import { DraggableWrapper, DragData } from "./DraggableWrapper";
+import { ExpenseRow, type ExpenseRowProps } from "./ExpenseRow";
+import { type DragData, DraggableWrapper } from "./DraggableWrapper";
 
 export interface DraggableExpenseRowProps extends ExpenseRowProps {
 	categoryId: string;
@@ -32,12 +31,10 @@ export const DraggableExpenseRow: React.FC<DraggableExpenseRowProps> = ({
 
 	return (
 		<DraggableWrapper
+			className="group cursor-grab active:cursor-grabbing" // <-- Add cursor styles
 			dragData={defaultDragData}
 			isDragging={isDragging}
-			showDragHandle={true}
-			dragHandlePosition="left"
-			dragHandleClassName="opacity-0 group-hover:opacity-100"
-			className="group"
+			showDragHandle={false} // <-- Change this to false
 		>
 			<ExpenseRow {...expenseRowProps} />
 		</DraggableWrapper>

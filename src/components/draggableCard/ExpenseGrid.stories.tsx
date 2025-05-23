@@ -7,7 +7,8 @@ import { BudgetCategoryCard } from "./BudgetCategoryCard";
 import { BudgetSummary } from "./BudgetSummary";
 import { ExpenseGrid } from "./ExpenseGrid";
 import { BudgetCalculator, BudgetCategory } from "./BudgetCalculator";
-
+import { PriceDropdown } from "./PriceDropDown";
+import { useState } from "react";
 // =============================================================================
 // ExpenseRow Stories
 // =============================================================================
@@ -35,79 +36,199 @@ export default expenseRowMeta;
 
 type ExpenseRowStory = StoryObj<typeof ExpenseRow>;
 
-export const BasicExpenseRow: ExpenseRowStory = {
+// Story with editable price that updates
+export const WithEditablePrice: ExpenseRowStory = {
 	args: {
-		id: "rent",
-		name: "Monthly Rent",
-		amount: 1500,
-		showRemoveButton: true,
-		isEditable: false,
-		onRemove: (id) => console.log("Remove expense:", id),
+		amount: 15000,
 	},
-	render: (args) => (
-		<div
-			style={{
-				width: "300px",
-				padding: "20px",
-				backgroundColor: "white",
-				borderRadius: "8px",
-			}}
-		>
-			<ExpenseRow {...args} />
-		</div>
-	),
+
+	render: () => {
+		const [amount, setAmount] = useState(1500);
+
+		return (
+			<div
+				style={{
+					width: "300px",
+					padding: "20px",
+					backgroundColor: "white",
+					borderRadius: "8px",
+					border: "1px solid #e2e8f0",
+				}}
+			>
+				<ExpenseRow
+					id="rent"
+					name="Monthly Rent"
+					amount={amount}
+					showRemoveButton={true}
+					isEditable={false}
+					onRemove={(id) => console.log("Remove expense:", id)}
+					onAmountEdit={(id, newAmount) => {
+						console.log("Amount edited:", id, newAmount);
+						setAmount(newAmount);
+					}}
+				/>
+				<p style={{ fontSize: "12px", color: "#64748b", marginTop: "8px" }}>
+					💡 Click the underlined price to edit it
+				</p>
+			</div>
+		);
+	},
 };
 
-export const EditableExpenseRow: ExpenseRowStory = {
+// Story with price dropdown that updates
+export const WithPriceDropdown: ExpenseRowStory = {
+	render: () => {
+		const [amount, setAmount] = useState(0);
+
+		return (
+			<div
+				style={{
+					width: "300px",
+					padding: "20px",
+					backgroundColor: "white",
+					borderRadius: "8px",
+					border: "1px solid #e2e8f0",
+				}}
+			>
+				<ExpenseRow
+					id="coffee"
+					name="Morning Coffee"
+					amount={amount}
+					showRemoveButton={true}
+					isEditable={false}
+					onRemove={(id) => console.log("Remove expense:", id)}
+					onAmountEdit={(id, newAmount) => {
+						console.log("Amount selected:", id, newAmount);
+						setAmount(newAmount);
+					}}
+					DropdownComponent={PriceDropdown}
+				/>
+				<p style={{ fontSize: "12px", color: "#64748b", marginTop: "8px" }}>
+					💡 Click "Add price" to select from dropdown
+				</p>
+			</div>
+		);
+	},
+};
+
+// Story showing both behaviors in a list with state management
+export const ExpenseList: ExpenseRowStory = {
+	render: () => {
+		const [expenses, setExpenses] = useState([
+			{ id: "1", name: "Rent", amount: 1200 },
+			{ id: "2", name: "Groceries", amount: 0 },
+			{ id: "3", name: "Gas", amount: 45.2 },
+			{ id: "4", name: "Coffee", amount: 0 },
+			{ id: "5", name: "Internet", amount: 79.99 },
+		]);
+
+		const handleAmountEdit = (id: string, newAmount: number) => {
+			console.log("Edit amount:", id, newAmount);
+			setExpenses((prev) =>
+				prev.map((expense) =>
+					expense.id === id ? { ...expense, amount: newAmount } : expense
+				)
+			);
+		};
+
+		const handleRemove = (id: string) => {
+			console.log("Remove:", id);
+			setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+		};
+
+		return (
+			<div
+				style={{
+					width: "400px",
+					padding: "20px",
+					backgroundColor: "white",
+					borderRadius: "8px",
+					border: "1px solid #e2e8f0",
+				}}
+			>
+				<h3
+					style={{ margin: "0 0 16px 0", fontSize: "18px", fontWeight: "600" }}
+				>
+					Monthly Expenses
+				</h3>
+				<div
+					style={{
+						border: "1px solid #e2e8f0",
+						borderRadius: "8px",
+						overflow: "hidden",
+					}}
+				>
+					{expenses.map((expense, index) => (
+						<ExpenseRow
+							key={expense.id}
+							id={expense.id}
+							name={expense.name}
+							amount={expense.amount}
+							showRemoveButton={true}
+							onRemove={handleRemove}
+							onAmountEdit={handleAmountEdit}
+							DropdownComponent={PriceDropdown}
+							className={index === expenses.length - 1 ? "border-b-0" : ""}
+						/>
+					))}
+				</div>
+				<p style={{ fontSize: "12px", color: "#64748b", marginTop: "12px" }}>
+					💡 Items with prices are editable (underlined). Items without prices
+					show dropdown.
+				</p>
+			</div>
+		);
+	},
+};
+
+// Story with full editing capabilities
+export const FullyEditable: ExpenseRowStory = {
 	args: {
-		id: "groceries",
-		name: "Weekly Groceries",
-		amount: 125.5,
-		showRemoveButton: true,
 		isEditable: true,
-		onRemove: (id) => console.log("Remove expense:", id),
-		onEdit: (id, name, amount) =>
-			console.log("Edit expense:", { id, name, amount }),
 	},
-	render: (args) => (
-		<div
-			style={{
-				width: "300px",
-				padding: "20px",
-				backgroundColor: "white",
-				borderRadius: "8px",
-			}}
-		>
-			<ExpenseRow {...args} />
-			<p style={{ fontSize: "12px", color: "#666", marginTop: "8px" }}>
-				💡 Click the row to edit
-			</p>
-		</div>
-	),
-};
 
-export const ReadOnlyExpenseRow: ExpenseRowStory = {
-	args: {
-		id: "insurance",
-		name: "Health Insurance",
-		amount: 250,
-		showRemoveButton: false,
-		isEditable: false,
+	render: () => {
+		const [expense, setExpense] = useState({
+			id: "utilities",
+			name: "Utilities",
+			amount: 125.5,
+		});
+
+		const handleFullEdit = (id: string, name: string, amount: number) => {
+			console.log("Full edit:", id, name, amount);
+			setExpense({ id, name, amount });
+		};
+
+		const handleAmountEdit = (id: string, amount: number) => {
+			console.log("Amount edited:", id, amount);
+			setExpense((prev) => ({ ...prev, amount }));
+		};
+
+		return (
+			<div
+				style={{
+					width: "300px",
+					padding: "20px",
+					backgroundColor: "white",
+					borderRadius: "8px",
+					border: "1px solid #e2e8f0",
+				}}
+			>
+				<ExpenseRow
+					{...expense}
+					showRemoveButton={true}
+					isEditable={true}
+					onRemove={(id) => console.log("Remove expense:", id)}
+					onEdit={handleFullEdit}
+					onAmountEdit={handleAmountEdit}
+				/>
+				<p style={{ fontSize: "12px", color: "#64748b", marginTop: "8px" }}>
+					💡 Click anywhere to edit name, or click price to edit amount
+				</p>
+			</div>
+		);
 	},
-	render: (args) => (
-		<div
-			style={{
-				width: "300px",
-				padding: "20px",
-				backgroundColor: "white",
-				borderRadius: "8px",
-			}}
-		>
-			<ExpenseRow {...args} />
-		</div>
-	),
 };
-
 // =============================================================================
 // DraggableWrapper Stories
 // =============================================================================
