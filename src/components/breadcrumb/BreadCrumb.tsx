@@ -2,7 +2,7 @@ import React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { MoreHorizontal, Minus } from "lucide-react";
 import { cn } from "./../../lib/utils";
-import { FlexibleDropdown, type DropdownItem } from "../Menu/DropDownMenu";
+import { FlexibleDropdown, type DropdownItem } from "../menu/DropDownMenu";
 
 const Breadcrumb = React.forwardRef<
 	HTMLElement,

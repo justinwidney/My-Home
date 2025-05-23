@@ -37,6 +37,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^1.7.0",
     "@hookform/resolvers": "^3.9.0",
     "@nivo/bar": "^0.87.0",
     "@nivo/core": "^0.87.0",
