@@ -13,8 +13,23 @@ const preview: Preview = {
 				date: /Date$/,
 			},
 		},
+		darkMode: {
+			classTarget: "html",
+			stylePreview: true,
+		},
 	},
-
+	globalTypes: {
+		theme: {
+			name: "Theme",
+			description: "Global theme for components",
+			defaultValue: "light",
+			toolbar: {
+				icon: "circlehollow",
+				items: ["light", "dark"],
+				showName: true,
+			},
+		},
+	},
 	decorators: [
 		// Adds theme switching support.
 		// NOTE: requires setting "darkMode" to "class" in your tailwind config

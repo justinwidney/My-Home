@@ -2,6 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+	:root {
+		--background: 0 0% 100%;
+		--foreground: 222.2 84% 4.9%;
+		--card: 0 0% 100%;
+		--card-foreground: 222.2 84% 4.9%;
+		--popover: 0 0% 100%;
+		--popover-foreground: 222.2 84% 4.9%;
+		--primary: 222.2 47.4% 11.2%;
+		--primary-foreground: 210 40% 98%;
+		--secondary: 210 40% 96.1%;
+		--secondary-foreground: 222.2 47.4% 11.2%;
+		--muted: 210 40% 96.1%;
+		--muted-foreground: 215.4 16.3% 46.9%;
+		--accent: 210 40% 96.1%;
+		--accent-foreground: 222.2 47.4% 11.2%;
+		--destructive: 0 84.2% 60.2%;
+		--destructive-foreground: 210 40% 98%;
+		--border: 214.3 31.8% 91.4%;
+		--input: 214.3 31.8% 91.4%;
+		--ring: 222.2 84% 4.9%;
+		--radius: 0.5rem;
+		--sidebar-background: 0 0% 98%;
+		--sidebar-foreground: 240 5.3% 26.1%;
+		--sidebar-primary: 240 5.9% 10%;
+		--sidebar-primary-foreground: 0 0% 98%;
+		--sidebar-accent: 240 4.8% 95.9%;
+		--sidebar-accent-foreground: 240 5.9% 10%;
+		--sidebar-border: 220 13% 91%;
+		--sidebar-ring: 217.2 91.2% 59.8%;
+	}
+
+	.dark {
+		--background: 222.2 84% 4.9%;
+		--foreground: 210 40% 98%;
+		--card: 222.2 84% 4.9%;
+		--card-foreground: 210 40% 98%;
+		--popover: 222.2 84% 4.9%;
+		--popover-foreground: 210 40% 98%;
+		--primary: 210 40% 98%;
+		--primary-foreground: 222.2 47.4% 11.2%;
+		--secondary: 217.2 32.6% 17.5%;
+		--secondary-foreground: 210 40% 98%;
+		--muted: 217.2 32.6% 17.5%;
+		--muted-foreground: 215 20.2% 65.1%;
+		--accent: 217.2 32.6% 17.5%;
+		--accent-foreground: 210 40% 98%;
+		--destructive: 0 62.8% 30.6%;
+		--destructive-foreground: 210 40% 98%;
+		--border: 217.2 32.6% 17.5%;
+		--input: 217.2 32.6% 17.5%;
+		--ring: 212.7 26.8% 83.9%;
+		--sidebar-background: 240 5.9% 10%;
+		--sidebar-foreground: 240 4.8% 95.9%;
+		--sidebar-primary: 224.3 76.3% 48%;
+		--sidebar-primary-foreground: 0 0% 100%;
+		--sidebar-accent: 240 3.7% 15.9%;
+		--sidebar-accent-foreground: 240 4.8% 95.9%;
+		--sidebar-border: 240 3.7% 15.9%;
+		--sidebar-ring: 217.2 91.2% 59.8%;
+	}
+}
+
 * {
 	box-sizing: border-box;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -76,30 +139,6 @@ input[type="submit"] {
 	50% {
 		opacity: 0.5;
 	}
-}
-
-@font-face {
-	font-family: "Nunito Sans";
-	font-style: italic;
-	font-weight: 400;
-	src: url(https://fonts.gstatic.com/s/nunitosans/v6/pe0oMImSLYBIv1o4X1M8cce4E9lKcw.ttf)
-		format("truetype");
-}
-
-@font-face {
-	font-family: "Nunito Sans";
-	font-style: normal;
-	font-weight: 400;
-	src: url(https://fonts.gstatic.com/s/nunitosans/v6/pe0qMImSLYBIv1o4X1M8cce9I94.ttf)
-		format("truetype");
-}
-
-@font-face {
-	font-family: "Nunito Sans";
-	font-style: normal;
-	font-weight: 800;
-	src: url(https://fonts.gstatic.com/s/nunitosans/v6/pe03MImSLYBIv1o4X1M8cc8aBc5tU1Q.ttf)
-		format("truetype");
 }
 
 .type-light {
@@ -218,18 +257,6 @@ textarea {
 	position: absolute;
 	top: 50%;
 	width: 1em;
-}
-
-@font-face {
-	font-family: "percolate";
-	src: url("../assets/icon/percolate.eot?5w3um4");
-	src:
-		url("../assets/icon/percolate.eot?#iefix5w3um4") format("embedded-opentype"),
-		url("../assets/icon/percolate.woff?5w3um4") format("woff"),
-		url("../assets/icon/percolate.ttf?5w3um4") format("truetype"),
-		url("../assets/icon/percolate.svg?5w3um4") format("svg");
-	font-weight: normal;
-	font-style: normal;
 }
 
 [class^="icon-"],
@@ -461,4 +488,310 @@ textarea {
 	display: inline-block;
 	vertical-align: top;
 	max-width: 100%;
+}
+
+/*  THis is new card stuff */
+/* CSS Variables */
+:root {
+	--color-dark: #232820;
+	--color-dark-25: rgba(35, 40, 32, 0.25);
+	--color-dark-translucent: rgba(0, 0, 0, 0.2);
+	--color-light: #f5f5f5;
+	--color-lightest: #ffffff;
+	--color-accent: #4a90e2;
+	--color-accent-lighter: #6ba3e5;
+	--font-headers: system-ui, -apple-system, sans-serif;
+	--step--2: 0.75rem;
+	--step--1: 0.875rem;
+	--step-2: 1.25rem;
+}
+
+/* Animations */
+@keyframes anim-stroke {
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes anim-opacity {
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes anim-hatch {
+	0%,
+	80% {
+		transform: rotate(0deg);
+	}
+	10%,
+	30%,
+	50%,
+	70% {
+		transform: rotate(-2deg);
+	}
+	20%,
+	40%,
+	60% {
+		transform: rotate(3deg);
+	}
+}
+
+@keyframes anim-study {
+	0% {
+		transform: translateX(75px) translateY(0);
+	}
+	25% {
+		transform: translateX(0) translateY(50px);
+	}
+	50% {
+		transform: translateX(-75px) translateY(0);
+	}
+	75% {
+		transform: translateX(0) translateY(-50px);
+	}
+	100% {
+		transform: translateX(75px) translateY(0);
+	}
+}
+
+/* Card Container */
+.card {
+	position: relative;
+	width: 300px;
+	aspect-ratio: 6.3 / 8.8;
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	overflow: hidden;
+	border-radius: 1em;
+	filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+	transition:
+		transform 0.5s ease,
+		filter 0.2s ease;
+	will-change: transform;
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: url("https://assets.codepen.io/2153413/cursor_flip.png"), pointer;
+}
+
+.card:hover {
+	transform: scale(1.1) rotate3d(1, 1, 1, 2deg);
+	filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+}
+
+.card:hover .rays {
+	opacity: 0.9;
+}
+
+/* Card Face */
+.cardFace {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	backface-visibility: hidden;
+	border-radius: 1em;
+	background-color: var(--color-light);
+	transition: transform 0.75s;
+	transition-timing-function: linear(
+		0,
+		0.008 1.1%,
+		0.031 2.2%,
+		0.129 4.8%,
+		0.257 7.2%,
+		0.671 14.2%,
+		0.789 16.5%,
+		0.881 18.6%,
+		0.957 20.7%,
+		1.019 22.9%,
+		1.063 25.1%,
+		1.094 27.4%,
+		1.114 30.7%,
+		1.112 34.5%,
+		1.018 49.9%,
+		0.99 59.1%,
+		1
+	);
+	z-index: 1;
+}
+
+.cardFront {
+	transform: rotateY(0deg);
+	padding: 1em 1em 0.25em 1em;
+}
+
+.cardBack {
+	transform: rotateY(180deg);
+	place-content: center;
+}
+
+.cardBack .overlayEdge {
+	transform: rotateY(180deg);
+	z-index: 10;
+}
+
+.flipped .cardFront {
+	transform: rotateY(-180deg);
+}
+
+.flipped .cardBack {
+	transform: rotateY(0deg);
+}
+
+/* Card Content */
+.cardName {
+	position: relative;
+	margin: 0;
+	margin-bottom: 0.25em;
+	font-size: var(--step-2);
+	text-transform: uppercase;
+	font-weight: normal;
+}
+
+.cardArt {
+	position: relative;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 5.9 / 3.8;
+	overflow: hidden;
+	border-radius: 0.5em;
+	outline: solid 2px var(--color-dark);
+}
+
+.cardArt img,
+.cardArt svg {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.rays {
+	mix-blend-mode: overlay;
+	transition: opacity 0.5s ease-in-out;
+	opacity: 0;
+}
+
+.cardSource {
+	font-size: var(--step--2);
+	display: flex;
+	justify-content: space-between;
+	margin-top: auto;
+}
+
+.cardSource p {
+	margin: 0;
+}
+
+/* Overlay Elements */
+.overlayEdge {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 101;
+}
+
+.overlayTexture {
+	position: absolute;
+	inset: 0;
+	mix-blend-mode: overlay;
+	pointer-events: none;
+	z-index: 100;
+}
+
+/* Abilities */
+.cardAbilities {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	flex-grow: 1;
+	gap: 0.5em;
+	padding: 0;
+	margin: 0.5em 0;
+	border: 0;
+	pointer-events: auto;
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: initial;
+	z-index: 10;
+}
+
+.ability {
+	position: relative;
+	display: flex;
+	gap: 1em;
+	justify-content: center;
+	padding: 0.5em 0.75em;
+	border-radius: 0.5em;
+	outline: solid 1px var(--color-dark-25);
+	transition: outline 0.25s ease-in-out;
+	cursor: pointer;
+	z-index: 11;
+}
+
+.ability:hover {
+	outline-color: var(--color-accent-lighter);
+}
+
+.ability span {
+	font-family: var(--font-headers);
+	font-weight: normal;
+	font-size: var(--step--1);
+}
+
+.ability p {
+	margin: 0;
+	flex-grow: 1;
+	font-size: var(--step--1);
+}
+
+.ability input[type="radio"] {
+	opacity: 0;
+	position: absolute;
+}
+
+.ability:has(input:checked) {
+	background: var(--color-lightest);
+	outline-width: 2px;
+	outline-color: var(--color-accent);
+}
+
+.ability em {
+	color: var(--color-accent);
+	position: relative;
+}
+
+.cardAbilities > span {
+	font-size: var(--step--2);
+	align-self: center;
+	font-weight: 700;
+	line-height: 0;
+}
+
+/* Ability Animations */
+.abilityOverlay {
+	pointer-events: none;
+}
+
+.activeHatch #ability-hatch {
+	animation: anim-hatch 2s ease-in-out infinite;
+	animation-delay: 3s;
+	transform-origin: 50% 100%;
+}
+
+.activeHatch .hatchCrack {
+	animation: anim-stroke 5s ease-in forwards;
+	animation-iteration-count: 1;
+}
+
+.activeStudy .studyUI {
+	animation: anim-opacity 2.5s ease-out forwards;
+	animation-iteration-count: 1;
+}
+
+.activeStudy .studyGlass {
+	opacity: 1;
+	animation: anim-study 10s ease-in-out infinite;
 }
