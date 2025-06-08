@@ -23,7 +23,7 @@ const StepperHeader = React.forwardRef<HTMLButtonElement, StepperHeaderProps>(
 				type="button"
 				className={cn(
 					// 20px × 20px square + md (rounded-md) border radius
-					"w-5 h-5 rounded-md border transition-colors",
+					"w-5 h-5 rounded-md border transition-colors ",
 					// Disabled state
 					isDisabled
 						? "cursor-not-allowed bg-gray-100 border-gray-200"

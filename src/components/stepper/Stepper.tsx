@@ -60,6 +60,7 @@ const Stepper: React.FC<StepperProps> = ({
 					alignItems: "center",
 					justifyContent: "center",
 					marginBottom: "1rem",
+					gap: "1rem",
 				}}
 			>
 				{steps.map((step, idx) => {
@@ -68,7 +69,6 @@ const Stepper: React.FC<StepperProps> = ({
 
 					return (
 						<React.Fragment key={idx}>
-							{idx !== 0 && <StepperSeparator />}
 							<StepperHeader
 								index={idx}
 								isDisabled={isDisabled}
