@@ -1,353 +1,583 @@
+// Sidebar.stories.tsx
+
 import type { Meta, StoryObj } from "@storybook/react";
-import { GalleryVerticalEnd, Minus, Plus } from "lucide-react";
+import {
+	BookOpen,
+	Bot,
+	Settings2,
+	SquareTerminal,
+	Zap,
+	GalleryVerticalEnd,
+	Command,
+	Home,
+	Users,
+	FileText,
+	Calendar,
+	BarChart,
+	Folder,
+	Forward,
+	Trash2,
+} from "lucide-react";
 
 import {
 	Sidebar,
-	SidebarProvider,
-	SidebarContent,
-	SidebarGroup,
 	SidebarHeader,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarMenuSub,
-	SidebarMenuSubButton,
-	SidebarMenuSubItem,
+	SidebarContent,
+	SidebarFooter,
 	SidebarTrigger,
 	SidebarInset,
-	SidebarRail,
 } from "./SideBar";
-
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from "../../ui/collapsible";
 
 import {
 	Breadcrumb,
 	BreadcrumbItem,
-	BreadcrumbLink,
 	BreadcrumbList,
 	BreadcrumbPage,
-	BreadcrumbSeparator,
 } from "../../ui/breadcrumb";
+import { TeamSwitcher } from "./TeamSwitcher";
+import { Navigation } from "./MainNavigation";
+import { UserProfile } from "./UserProfile";
 
-import { Separator } from "../../ui/seperator";
+// Sample data for the unified navigation
+const navigationSections = [
+	// Main Navigation Section (no title)
+	{
+		items: [
+			{
+				title: "Overview",
+				url: "/",
+				icon: Home,
+				isActive: true,
+			},
+			{
+				title: "Getting Started",
+				url: "/docs",
+				icon: BookOpen,
+				items: [
+					{ title: "Installation", url: "/docs/installation" },
+					{ title: "Project Structure", url: "/docs/structure" },
+					{ title: "Configuration", url: "/docs/config" },
+				],
+			},
+			{
+				title: "Playground",
+				url: "/playground",
+				icon: SquareTerminal,
+				items: [
+					{ title: "History", url: "/playground/history" },
+					{ title: "Starred", url: "/playground/starred" },
+					{ title: "Settings", url: "/playground/settings" },
+				],
+			},
+			{
+				title: "Models",
+				url: "/models",
+				icon: Bot,
+				items: [
+					{ title: "Genesis", url: "/models/genesis" },
+					{ title: "Explorer", url: "/models/explorer" },
+					{ title: "Quantum", url: "/models/quantum" },
+				],
+			},
+			{
+				title: "Documentation",
+				url: "/documentation",
+				icon: FileText,
+				items: [
+					{ title: "Introduction", url: "/docs/intro" },
+					{ title: "API Reference", url: "/docs/api" },
+					{ title: "Examples", url: "/docs/examples" },
+					{ title: "Changelog", url: "/docs/changelog" },
+				],
+			},
+			{
+				title: "Settings",
+				url: "/settings",
+				icon: Settings2,
+				items: [
+					{ title: "General", url: "/settings/general" },
+					{ title: "Team", url: "/settings/team" },
+					{ title: "Billing", url: "/settings/billing" },
+					{ title: "Limits", url: "/settings/limits" },
+				],
+			},
+		],
+	},
+	// Projects Section
+	{
+		title: "Projects",
+		items: [
+			{
+				title: "Design Engineering",
+				url: "/projects/design",
+				icon: Zap,
+				actions: [
+					{
+						label: "View Project",
+						icon: Folder,
+						onClick: (): void => {
+							console.log("View Design Engineering");
+						},
+					},
+					{
+						label: "Share Project",
+						icon: Forward,
+						onClick: (): void => {
+							console.log("Share Design Engineering");
+						},
+					},
+					{
+						label: "Delete Project",
+						icon: Trash2,
+						onClick: (): void => {
+							if (confirm("Are you sure you want to delete this project?")) {
+								console.log("Deleting Design Engineering project...");
+							}
+						},
+						variant: "destructive" as const,
+					},
+				],
+			},
+			{
+				title: "Sales & Marketing",
+				url: "/projects/sales",
+				icon: BarChart,
+				actions: [
+					{
+						label: "View Project",
+						icon: Folder,
+						onClick: (): void => {
+							console.log("View Sales & Marketing");
+						},
+					},
+					{
+						label: "Share Project",
+						icon: Forward,
+						onClick: (): void => {
+							console.log("Share Sales & Marketing");
+						},
+					},
+					{
+						label: "Delete Project",
+						icon: Trash2,
+						onClick: (): void => {
+							console.log("Delete Sales & Marketing project");
+						},
+						variant: "destructive" as const,
+					},
+				],
+			},
+			{
+				title: "Travel App",
+				url: "/projects/travel",
+				icon: Calendar,
+				actions: [
+					{
+						label: "View Project",
+						icon: Folder,
+						onClick: (): void => {
+							console.log("View Travel App");
+						},
+					},
+					{
+						label: "Share Project",
+						icon: Forward,
+						onClick: (): void => {
+							console.log("Share Travel App");
+						},
+					},
+					{
+						label: "Delete Project",
+						icon: Trash2,
+						onClick: (): void => {
+							console.log("Delete Travel App project");
+						},
+						variant: "destructive" as const,
+					},
+				],
+			},
+		],
+	},
+];
 
-// Mock SearchForm component
-const SearchForm = () => (
-	<div className="relative px-2">
-		<svg
-			className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-			fill="none"
-			stroke="currentColor"
-			viewBox="0 0 24 24"
-		>
-			<circle cx="11" cy="11" r="8" />
-			<path d="m21 21-4.35-4.35" />
-		</svg>
-		<input
-			className="w-full rounded-md border border-input bg-background px-8 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-			placeholder="Search documentation..."
-			type="search"
-		/>
-	</div>
-);
-
-// Sample data matching your structure
-const data = {
-	navMain: [
+// Sample user and team data
+const sampleData = {
+	user: {
+		name: "John Doe",
+		email: "john@example.com",
+		avatar: "/avatars/john-doe.jpg",
+	},
+	teams: [
 		{
-			title: "Getting Started",
-			url: "#",
-			items: [
-				{
-					title: "Installation",
-					url: "#",
-				},
-				{
-					title: "Project Structure",
-					url: "#",
-				},
-			],
+			name: "Acme Inc",
+			logo: GalleryVerticalEnd,
+			plan: "Enterprise",
 		},
 		{
-			title: "Building Your Application",
-			url: "#",
-			items: [
-				{
-					title: "Routing",
-					url: "#",
-				},
-				{
-					title: "Data Fetching",
-					url: "#",
-					isActive: true,
-				},
-				{
-					title: "Rendering",
-					url: "#",
-				},
-				{
-					title: "Caching",
-					url: "#",
-				},
-				{
-					title: "Styling",
-					url: "#",
-				},
-				{
-					title: "Optimizing",
-					url: "#",
-				},
-				{
-					title: "Configuring",
-					url: "#",
-				},
-				{
-					title: "Testing",
-					url: "#",
-				},
-				{
-					title: "Authentication",
-					url: "#",
-				},
-				{
-					title: "Deploying",
-					url: "#",
-				},
-				{
-					title: "Upgrading",
-					url: "#",
-				},
-				{
-					title: "Examples",
-					url: "#",
-				},
-			],
-		},
-		{
-			title: "API Reference",
-			url: "#",
-			items: [
-				{
-					title: "Components",
-					url: "#",
-				},
-				{
-					title: "File Conventions",
-					url: "#",
-				},
-				{
-					title: "Functions",
-					url: "#",
-				},
-				{
-					title: "next.config.js Options",
-					url: "#",
-				},
-				{
-					title: "CLI",
-					url: "#",
-				},
-				{
-					title: "Edge Runtime",
-					url: "#",
-				},
-			],
-		},
-		{
-			title: "Architecture",
-			url: "#",
-			items: [
-				{
-					title: "Accessibility",
-					url: "#",
-				},
-				{
-					title: "Fast Refresh",
-					url: "#",
-				},
-				{
-					title: "Next.js Compiler",
-					url: "#",
-				},
-				{
-					title: "Supported Browsers",
-					url: "#",
-				},
-				{
-					title: "Turbopack",
-					url: "#",
-				},
-			],
-		},
-		{
-			title: "Community",
-			url: "#",
-			items: [
-				{
-					title: "Contribution Guide",
-					url: "#",
-				},
-			],
+			name: "Acme Corp",
+			logo: Command,
+			plan: "Startup",
 		},
 	],
 };
 
-// AppSidebar component matching your actual implementation
-function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+// Complete Sidebar Implementation with unified navigation
+function CompleteSidebar(): JSX.Element {
 	return (
-		<Sidebar {...props}>
+		<Sidebar className="border-r">
 			<SidebarHeader>
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton size="lg" asChild>
-							<a href="#">
-								<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-									<GalleryVerticalEnd className="size-4" />
-								</div>
-								<div className="flex flex-col gap-0.5 leading-none">
-									<span className="font-medium">Documentation</span>
-									<span className="">v1.0.0</span>
-								</div>
-							</a>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
-				<SearchForm />
+				<TeamSwitcher teams={sampleData.teams} />
 			</SidebarHeader>
+
 			<SidebarContent>
-				<SidebarGroup>
-					<SidebarMenu>
-						{data.navMain.map((item, index) => (
-							<Collapsible
-								key={item.title}
-								defaultOpen={index === 1}
-								className="group/collapsible"
-							>
-								<SidebarMenuItem>
-									<CollapsibleTrigger asChild>
-										<SidebarMenuButton>
-											{item.title}{" "}
-											<Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
-											<Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-										</SidebarMenuButton>
-									</CollapsibleTrigger>
-									{item.items?.length ? (
-										<CollapsibleContent>
-											<SidebarMenuSub>
-												{item.items.map((item) => (
-													<SidebarMenuSubItem key={item.title}>
-														<SidebarMenuSubButton
-															asChild
-															isActive={item.isActive}
-														>
-															<a href={item.url}>{item.title}</a>
-														</SidebarMenuSubButton>
-													</SidebarMenuSubItem>
-												))}
-											</SidebarMenuSub>
-										</CollapsibleContent>
-									) : null}
-								</SidebarMenuItem>
-							</Collapsible>
-						))}
-					</SidebarMenu>
-				</SidebarGroup>
+				<Navigation sections={navigationSections} />
 			</SidebarContent>
-			<SidebarRail />
+
+			<SidebarFooter>
+				<UserProfile user={sampleData.user} />
+			</SidebarFooter>
 		</Sidebar>
 	);
 }
 
-// Page component matching your page.tsx structure
-function Page() {
+// Main content area
+function MainContent({
+	title,
+	description,
+}: {
+	title: string;
+	description: string;
+}): JSX.Element {
 	return (
-		<SidebarProvider>
-			<AppSidebar />
-			<SidebarInset>
-				<header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-					<SidebarTrigger className="-ml-1" />
-					<Separator
-						orientation="vertical"
-						className="mr-2 data-[orientation=vertical]:h-4"
-					/>
-					<Breadcrumb>
-						<BreadcrumbList>
-							<BreadcrumbItem className="hidden md:block">
-								<BreadcrumbLink href="#">
-									Building Your Application
-								</BreadcrumbLink>
-							</BreadcrumbItem>
-							<BreadcrumbSeparator className="hidden md:block" />
-							<BreadcrumbItem>
-								<BreadcrumbPage>Data Fetching</BreadcrumbPage>
-							</BreadcrumbItem>
-						</BreadcrumbList>
-					</Breadcrumb>
-				</header>
-				<div className="flex flex-1 flex-col gap-4 p-4">
-					<div className="grid auto-rows-min gap-4 md:grid-cols-3">
-						<div className="aspect-video rounded-xl bg-black/50" />
-						<div className="aspect-video rounded-xl bg-black/50" />
-						<div className="aspect-video rounded-xl bg-black/50" />
+		<SidebarInset>
+			<div className="flex h-[70px] shrink-0 items-center gap-2 border-b px-4">
+				<SidebarTrigger />
+				<div className="h-4 w-px bg-border mx-2" />
+				<Breadcrumb>
+					<BreadcrumbList>
+						<BreadcrumbItem>
+							<BreadcrumbPage>{title}</BreadcrumbPage>
+						</BreadcrumbItem>
+					</BreadcrumbList>
+				</Breadcrumb>
+			</div>
+
+			<div className="p-8">
+				<h1 className="text-3xl font-bold mb-4">{title}</h1>
+				<p className="text-muted-foreground mb-8">{description}</p>
+
+				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+					<div className="p-6 bg-card rounded-lg border">
+						<h3 className="font-medium mb-2">Unified Navigation</h3>
+						<p className="text-sm text-muted-foreground">
+							Single component handles both expandable navigation items and
+							items with dropdown actions.
+						</p>
 					</div>
-					<div className="min-h-[100vh] flex-1 rounded-xl bg-black/50 md:min-h-min" />
+					<div className="p-6 bg-card rounded-lg border">
+						<h3 className="font-medium mb-2">Section Grouping</h3>
+						<p className="text-sm text-muted-foreground">
+							Navigation items are organized into sections with optional titles
+							for clear separation.
+						</p>
+					</div>
+					<div className="p-6 bg-card rounded-lg border">
+						<h3 className="font-medium mb-2">Contextual Actions</h3>
+						<p className="text-sm text-muted-foreground">
+							Project items show dropdown menus with contextual actions like
+							view, share, and delete.
+						</p>
+					</div>
+					<div className="p-6 bg-card rounded-lg border">
+						<h3 className="font-medium mb-2">Smooth Transitions</h3>
+						<p className="text-sm text-muted-foreground">
+							Hover near the sidebar to see smooth 200ms transitions with
+							consistent icon positioning.
+						</p>
+					</div>
+					<div className="p-6 bg-card rounded-lg border">
+						<h3 className="font-medium mb-2">Expandable Sections</h3>
+						<p className="text-sm text-muted-foreground">
+							Main navigation items expand to show sub-items with staggered
+							reveal animations.
+						</p>
+					</div>
+					<div className="p-6 bg-card rounded-lg border">
+						<h3 className="font-medium mb-2">Team & Profile</h3>
+						<p className="text-sm text-muted-foreground">
+							Header and footer components for team switching and user profile
+							management.
+						</p>
+					</div>
 				</div>
-			</SidebarInset>
-		</SidebarProvider>
+			</div>
+		</SidebarInset>
 	);
 }
 
-// Create a minimal wrapper component that doesn't trigger the context error
-const SidebarLayout = () => <div />;
+// Complete demo layout
+function DemoLayout(): JSX.Element {
+	return (
+		<div className="flex h-screen bg-background">
+			<CompleteSidebar />
+			<MainContent
+				description="Move your mouse towards the sidebar to experience smooth hover interactions. This unified navigation system handles both expandable menu items and items with contextual actions."
+				title="Unified Navigation Sidebar"
+			/>
+		</div>
+	);
+}
 
-const meta = {
-	title: "Layout/SidebarLayout",
-	component: SidebarLayout, // Use a minimal component that won't trigger errors
+// Storybook configuration
+const meta: Meta = {
+	title: "Layout/UnifiedNavigation",
 	parameters: {
 		layout: "fullscreen",
 		docs: {
 			description: {
 				component: `
-A collapsible sidebar navigation component with multiple sections and search functionality.
+A unified navigation system that handles both expandable navigation items and items with contextual dropdown actions.
+
+## Key Features
+
+- **Unified Component**: Single Navigation component handles both expandable items and dropdown actions
+- **Section Grouping**: Organize navigation items into sections with optional titles
+- **Flexible Actions**: Items can have either expandable children or dropdown actions (not both)
+- **Smooth Animations**: 200ms cubic-bezier transitions with staggered child reveals
+- **Clean Architecture**: Simple prop-based structure without complex contexts
+
+## Navigation Data Structure
+
+\`\`\`tsx
+const sections = [
+  // Main navigation (no title)
+  {
+    items: [
+      {
+        title: "Overview",
+        url: "/",
+        icon: Home,
+        isActive: true,
+      },
+      {
+        title: "Getting Started",
+        url: "/docs", 
+        icon: BookOpen,
+        items: [  // Expandable children
+          { title: "Installation", url: "/docs/installation" }
+        ],
+      }
+    ],
+  },
+  // Projects section  
+  {
+    title: "Projects",
+    items: [
+      {
+        title: "Design Engineering",
+        url: "/projects/design",
+        icon: Zap,
+        actions: [  // Dropdown actions
+          {
+            label: "View Project",
+            icon: Folder,
+            onClick: () => console.log("View project"),
+          }
+        ],
+      }
+    ],
+  }
+];
+\`\`\`
 
 ## Usage
 
-The sidebar requires the following components to work together:
-- \`SidebarProvider\` - Provides context for all sidebar components
-- \`Sidebar\` - The main sidebar container
-- \`SidebarInset\` - The main content area next to the sidebar
-
-### Basic Implementation
-
 \`\`\`tsx
-<SidebarProvider>
-  <AppSidebar />
-  <SidebarInset>
-    <header>
-      <SidebarTrigger />
-      {/* Your header content */}
-    </header>
-    <main>
-      {/* Your main content */}
-    </main>
-  </SidebarInset>
-</SidebarProvider>
+<Sidebar>
+  <SidebarHeader>
+    <TeamSwitcher teams={teams} />
+  </SidebarHeader>
+  <SidebarContent>
+    <Navigation sections={navigationSections} />
+  </SidebarContent>
+  <SidebarFooter>
+    <UserProfile user={userData} />
+  </SidebarFooter>
+</Sidebar>
 \`\`\`
         `,
 			},
 		},
 	},
-} satisfies Meta<typeof SidebarLayout>;
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
-// Full page layout with sidebar
-export const Default: Story = {
-	name: "Default Layout",
-	render: () => <Page />,
+// Main stories
+export const Complete: Story = {
+	name: "Complete Unified Sidebar",
+	render: () => <DemoLayout />,
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"A complete sidebar with unified navigation handling both expandable menu items and items with dropdown actions. Hover near the sidebar to see the smooth expansion animation.",
+			},
+		},
+	},
+};
+
+export const NavigationOnly: Story = {
+	name: "Navigation Component Only",
+	render: () => (
+		<div className="flex h-screen bg-background">
+			<Sidebar>
+				<SidebarContent>
+					<Navigation sections={navigationSections} />
+				</SidebarContent>
+			</Sidebar>
+			<MainContent
+				description="Showcasing the unified navigation component with both expandable sections and dropdown actions."
+				title="Unified Navigation"
+			/>
+		</div>
+	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"Isolated view of the unified navigation component showing both expandable menu items and items with contextual actions.",
+			},
+		},
+	},
+};
+
+export const MainNavigationOnly: Story = {
+	name: "Main Navigation Only",
+	render: () => {
+		const mainNavOnly = [
+			{
+				items: [
+					{
+						title: "Overview",
+						url: "/",
+						icon: Home,
+						isActive: true,
+					},
+					{
+						title: "Getting Started",
+						url: "/docs",
+						icon: BookOpen,
+						items: [
+							{ title: "Installation", url: "/docs/installation" },
+							{ title: "Project Structure", url: "/docs/structure" },
+						],
+					},
+					{
+						title: "Settings",
+						url: "/settings",
+						icon: Settings2,
+						items: [
+							{ title: "General", url: "/settings/general" },
+							{ title: "Team", url: "/settings/team" },
+						],
+					},
+				],
+			},
+		];
+
+		return (
+			<div className="flex h-screen bg-background">
+				<Sidebar>
+					<SidebarContent>
+						<Navigation sections={mainNavOnly} />
+					</SidebarContent>
+				</Sidebar>
+				<MainContent
+					description="Just the main navigation section with expandable menu items."
+					title="Main Navigation"
+				/>
+			</div>
+		);
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"Only the main navigation section showing expandable menu items without the projects section.",
+			},
+		},
+	},
+};
+
+export const ProjectsOnly: Story = {
+	name: "Projects Section Only",
+	render: () => {
+		const projectsOnly = [
+			{
+				title: "Projects",
+				items: navigationSections[1]?.items ?? [], // Get projects from the main data
+			},
+		];
+
+		return (
+			<div className="flex h-screen bg-background">
+				<Sidebar>
+					<SidebarContent>
+						<Navigation sections={projectsOnly} />
+					</SidebarContent>
+				</Sidebar>
+				<MainContent
+					description="Just the projects section with dropdown actions for each project."
+					title="Projects Navigation"
+				/>
+			</div>
+		);
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"Only the projects section showing items with contextual dropdown actions.",
+			},
+		},
+	},
+};
+
+export const MinimalSidebar: Story = {
+	name: "Minimal Setup",
+	render: () => {
+		const minimalSections = [
+			{
+				items: [
+					{ title: "Dashboard", url: "/", icon: Home, isActive: true },
+					{ title: "Users", url: "/users", icon: Users },
+					{ title: "Settings", url: "/settings", icon: Settings2 },
+				],
+			},
+		];
+
+		return (
+			<div className="flex h-screen bg-background">
+				<Sidebar>
+					<SidebarContent>
+						<Navigation sections={minimalSections} />
+					</SidebarContent>
+				</Sidebar>
+				<MainContent
+					description="A basic sidebar setup with just essential navigation items."
+					title="Minimal Sidebar"
+				/>
+			</div>
+		);
+	},
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"A minimal sidebar implementation showing how simple it is to get started with just basic navigation items.",
+			},
+		},
+	},
 };
