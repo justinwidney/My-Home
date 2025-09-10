@@ -68,8 +68,8 @@ export function UserProfile({
 				{isExpanded && (
 					<DropdownMenuTrigger asChild>
 						<button
+							className="absolute top-0 left-[55px] right-[15px] h-[48px] flex items-center gap-2 text-left group-hover:text-foreground transition-colors duration-200  mr-2"
 							type="button"
-							className="absolute top-0 left-[55px] right-[15px] h-[48px] flex items-center gap-2 text-left group-hover:text-foreground transition-colors duration-200"
 						>
 							<div className="min-w-0 flex-1">
 								<div className="text-sm font-medium text-foreground truncate">
@@ -87,10 +87,11 @@ export function UserProfile({
 				{/* Dropdown content */}
 				{isExpanded && (
 					<DropdownMenuContent
-						align="end"
-						side="right"
-						sideOffset={4}
+						align="start"
+						alignOffset={-35}
 						className="w-56 z-[60]"
+						side="top"
+						sideOffset={15}
 					>
 						<DropdownMenuLabel>
 							<div className="flex items-center space-x-2">

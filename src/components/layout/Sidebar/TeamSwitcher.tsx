@@ -29,7 +29,9 @@ export function TeamSwitcher({
 	isExpanded,
 	onMenuOpenChange,
 }: TeamSwitcherProps): JSX.Element | null {
-	const [activeTeam, setActiveTeam] = React.useState<Team>(teams[0]);
+	const [activeTeam, setActiveTeam] = React.useState<Team>(
+		() => teams[0] || { name: "", logo: (): null => null, plan: "" }
+	);
 	if (!activeTeam) return null;
 
 	return (
@@ -65,7 +67,7 @@ export function TeamSwitcher({
 					<DropdownMenuTrigger asChild>
 						<button
 							aria-label="Switch team"
-							className="absolute top-1/2 -translate-y-1/2 left-[55px] right-[15px] h-[40px] flex items-center gap-2 text-left group-hover:text-foreground transition-colors duration-200 mr-3 "
+							className="absolute top-1/2 -translate-y-1/2 left-[55px] right-[15px] h-[40px] flex items-center gap-2 text-left group-hover:text-foreground transition-colors duration-200 mr-2 "
 							type="button"
 						>
 							<div className="min-w-0 flex-1">
@@ -82,8 +84,10 @@ export function TeamSwitcher({
 				{isExpanded && (
 					<DropdownMenuContent
 						align="start"
+						alignOffset={-35}
 						className="w-56 z-[60]"
 						side="bottom"
+						sideOffset={2}
 					>
 						<DropdownMenuLabel className="text-xs text-muted-foreground">
 							Teams

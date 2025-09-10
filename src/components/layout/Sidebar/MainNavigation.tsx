@@ -125,7 +125,7 @@ function NavigationItem({
 			<div className="pointer-events-none absolute top-0 left-[15px] w-[40px] h-[40px] flex items-center justify-center">
 				<div
 					className={cn(
-						"text-muted-foreground transition-colors duration-200",
+						"text-foreground transition-colors duration-200",
 						"group-hover:text-foreground",
 						item.isActive && "text-foreground"
 					)}
@@ -256,7 +256,7 @@ function NavigationSection({
 	onAnyMenuOpenChange: (open: boolean) => void;
 }): JSX.Element {
 	return (
-		<div className="mb-6 first:mb-0">
+		<div className="mb-6 first:mb-[24px]">
 			{/* Section title */}
 			{section.title && isExpanded && (
 				<div className="px-4 mb-2">

@@ -1,91 +1,81 @@
 // Stepper.tsx
-import { Fragment, useState, type ReactNode } from "react";
-import StepperHeader from "./StepperHeader";
-import StepperSeparator from "./StepperSeperator";
-import StepperContent from "./StepperContent";
 import React from "react";
 
 export interface Step {
-	/** Anything you want to show as the “label” inside the header rectangle */
-	header: ReactNode;
-	/** The ReactNode to render when this step is active */
-	content: ReactNode;
+	id: string;
+	label: string;
 }
 
 export interface StepperProps {
-	/** Array of steps (each with a header + content) */
 	steps: Step[];
-	/** Index of the step to show first (0-based). Defaults to 0. */
-	initialActiveStep?: number;
-	/**
-	 * If true, clicking on an **incomplete** step does nothing.
-	 * Otherwise, user can jump around freely.
-	 */
-	linear?: boolean;
-	/**
-	 * Called whenever the active step changes:
-	 * `(newIndex) => void`
-	 */
-	onStepChange?: (newIndex: number) => void;
+	currentStep: number;
+	className?: string;
 }
 
 const Stepper: React.FC<StepperProps> = ({
 	steps,
-	initialActiveStep = 0,
-	linear = false,
-	onStepChange,
+	currentStep,
+	className = "",
 }) => {
-	const [activeStep, setActiveStep] = useState<number>(initialActiveStep);
-
-	const handleHeaderClick = (index: number) => {
-		if (linear && index > activeStep) {
-			// In linear mode, prevent clicking “ahead” of the current.
-			return;
-		}
-		if (index !== activeStep) {
-			setActiveStep(index);
-			if (onStepChange) {
-				onStepChange(index);
-			}
-		}
-	};
-
 	return (
-		<div className="stepper-root" style={{ width: "100%" }}>
-			{/* ───── HEADER (Squares + Separators) ───── */}
-			<div
-				className="stepper-header-container"
-				style={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					marginBottom: "1rem",
-					gap: "1rem",
-				}}
-			>
-				{steps.map((step, idx) => {
-					const isHighlighted = idx <= activeStep; // ≤ so steps 0..activeStep all filled
-					const isDisabled = linear && idx > activeStep;
+		<div className={`flex items-center space-x-4 ${className}`}>
+			{steps.map((step, index) => (
+				<React.Fragment key={step.id}>
+					{/* Step Circle */}
+					<div className="flex items-center">
+						<div
+							className={`
+								relative flex items-center justify-center w-8 h-8 rounded-full
+								text-sm font-semibold transition-all duration-300
+								${
+									index <= currentStep
+										? "bg-blue-600 text-white shadow-lg"
+										: "bg-gray-200 text-gray-500"
+								}
+							`}
+						>
+							{index < currentStep ? (
+								// Checkmark for completed steps
+								<svg
+									className="w-4 h-4"
+									fill="currentColor"
+									viewBox="0 0 20 20"
+								>
+									<path
+										fillRule="evenodd"
+										d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+										clipRule="evenodd"
+									/>
+								</svg>
+							) : (
+								// Step number
+								<span>{index + 1}</span>
+							)}
+						</div>
 
-					return (
-						<React.Fragment key={idx}>
-							<StepperHeader
-								index={idx}
-								isDisabled={isDisabled}
-								isHighlighted={isHighlighted}
-								onClick={() => {
-									handleHeaderClick(idx);
-								}}
-							/>
-						</React.Fragment>
-					);
-				})}
-			</div>
+						{/* Step Label */}
+						<span
+							className={`
+								ml-3 text-sm font-medium transition-colors duration-300
+								${index <= currentStep ? "text-gray-900" : "text-gray-500"}
+							`}
+						>
+							{step.label}
+						</span>
+					</div>
 
-			{/* ───── CONTENT (Only show active step’s content) ───── */}
-			<div className="stepper-content-container">
-				<StepperContent>{steps[activeStep]?.content}</StepperContent>
-			</div>
+					{/* Connector Line */}
+					{index < steps.length - 1 && (
+						<div
+							className={`
+								h-px flex-1 transition-all duration-300
+								${index < currentStep ? "bg-blue-600" : "bg-gray-200"}
+							`}
+							style={{ minWidth: "2rem" }}
+						/>
+					)}
+				</React.Fragment>
+			))}
 		</div>
 	);
 };
