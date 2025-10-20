@@ -47,4 +47,16 @@ const useTaskBoxStore = create<TaskBoxState & TaskBoxActions>((set) => ({
 	},
 }));
 
+type SearchState = {
+	isOpen: boolean;
+	setOpen: (open: boolean) => void; // <- boolean setter
+	toggleOpen: () => void; // optional
+};
+
+export const useSearchStore = create<SearchState>((set) => ({
+	isOpen: false,
+	setOpen: (open) => set({ isOpen: open }),
+	toggleOpen: () => set((s) => ({ isOpen: !s.isOpen })),
+}));
+
 export default useTaskBoxStore;

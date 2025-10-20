@@ -1,10 +1,9 @@
-// Updated Sidebar.tsx
+// Sidebar.tsx
 "use client";
-
 import * as React from "react";
-import { cn } from "../../../lib/utils";
-import { PanelLeftIcon } from "lucide-react";
-import { Button } from "../../ui/button";
+import { cn } from "@/lib/utils";
+import { PanelLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Main Sidebar Container
 interface SidebarProps {
@@ -30,10 +29,8 @@ export function Sidebar({
 		<aside
 			style={{ width: effectiveExpanded ? defaultWidth : collapsedWidth }}
 			className={cn(
-				"h-screen flex-shrink-0 flex-col desktop:overflow-hidden desktop:rounded-tl-[10px] desktop:rounded-bl-[10px] justify-between fixed top-0 pb-4 items-center hidden md:flex z-50",
-				"bg-background border-r border-border",
+				"h-screen flex flex-col justify-start fixed top-0 left-0 p-2 z-50",
 				"transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]",
-				"hidden md:flex",
 				className
 			)}
 			onMouseEnter={() => {
@@ -55,7 +52,7 @@ export function Sidebar({
 	);
 }
 
-// Updated Header Section
+// Header Section
 interface SidebarHeaderProps {
 	children: React.ReactNode;
 	isExpanded?: boolean;
@@ -67,17 +64,18 @@ export function SidebarHeader({
 	isExpanded,
 	onMenuOpenChange,
 }: SidebarHeaderProps): JSX.Element {
-	const injectExpanded = (node: React.ReactNode): React.ReactNode =>
-		React.isValidElement(node)
-			? React.cloneElement(node as React.ReactElement, {
-					isExpanded,
-					onMenuOpenChange,
-				})
-			: node;
-
 	return (
-		<div className="h-[70px] bg-background border-b border-border w-full relative">
-			{children && injectExpanded(children)}
+		<div className="bg-background border border-border rounded-lg w-full mb-3 overflow-hidden shadow-sm flex-shrink-0">
+			<div className="h-full w-full relative">
+				{React.Children.map(children, (child) =>
+					React.isValidElement(child)
+						? React.cloneElement(child as React.ReactElement, {
+								isExpanded,
+								onMenuOpenChange,
+							})
+						: child
+				)}
+			</div>
 		</div>
 	);
 }
@@ -95,7 +93,7 @@ export function SidebarContent({
 	onMenuOpenChange,
 }: SidebarContentProps): JSX.Element {
 	return (
-		<div className="flex-1 flex flex-col w-full">
+		<div className="bg-background border border-border rounded-lg w-full mb-2 overflow-y-auto shadow-sm flex-shrink-0 flex-grow-0">
 			{React.Children.map(children, (child) =>
 				React.isValidElement(child)
 					? React.cloneElement(child as React.ReactElement, {
@@ -119,7 +117,7 @@ export function SidebarFooter({
 	isExpanded,
 }: SidebarFooterProps): JSX.Element {
 	return (
-		<div className="pb-4 w-full">
+		<div className="bg-background border border-border rounded-lg w-full shadow-sm flex-shrink-0 mt-auto">
 			{React.Children.map(children, (child) =>
 				React.isValidElement(child)
 					? React.cloneElement(child as React.ReactElement, { isExpanded })
@@ -141,12 +139,12 @@ export function SidebarTrigger({
 }: SidebarTriggerProps): JSX.Element {
 	return (
 		<Button
-			className={cn("size-7", className)}
+			className={cn("size-10", className)}
 			size="icon"
 			variant="ghost"
 			onClick={onClick}
 		>
-			<PanelLeftIcon />
+			<PanelLeft size={20} />
 			<span className="sr-only">Toggle Sidebar</span>
 		</Button>
 	);
@@ -162,5 +160,5 @@ export function SidebarInset({
 	children,
 	className,
 }: SidebarInsetProps): JSX.Element {
-	return <main className={cn("flex-1 ml-[70px]", className)}>{children}</main>;
+	return <main className={cn("flex-1 ", className)}>{children}</main>;
 }

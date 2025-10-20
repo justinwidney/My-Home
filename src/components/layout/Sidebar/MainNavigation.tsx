@@ -1,4 +1,4 @@
-// Fixed Navigation.tsx
+// MainNavigation.tsx
 import { cn } from "@/lib/utils";
 import { ChevronDown, MoreHorizontal, type LucideIcon } from "lucide-react";
 import React from "react";
@@ -40,6 +40,7 @@ interface NavigationSection {
 interface NavigationProps {
 	sections: Array<NavigationSection>;
 	isExpanded?: boolean;
+	onAnyMenuOpenChange?: (open: boolean) => void;
 }
 
 // Separate child item component for easier tracing
@@ -59,7 +60,7 @@ function ChildItem({
 		<a key={child.url} className="block group/child" href={child.url}>
 			<div
 				className={cn(
-					"ml-[42px] mr-4 h-[32px] flex items-center",
+					"ml-[40px] mr-4 h-[32px] flex items-center",
 					"border-l border-border pl-3",
 					"transition-all duration-200 ease-out",
 					shouldShow ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
@@ -90,13 +91,13 @@ function NavigationItem({
 	isExpanded,
 	isItemExpanded,
 	onToggle,
-	onMenuOpenChange, // NEW
+	onMenuOpenChange,
 }: {
 	item: NavigationItem;
 	isExpanded?: boolean;
 	isItemExpanded?: boolean;
 	onToggle?: (url: string) => void;
-	onMenuOpenChange?: (open: boolean) => void; // NEW
+	onMenuOpenChange?: (open: boolean) => void;
 }): JSX.Element {
 	const Icon = item.icon;
 	const hasChildren = !!(item.items && item.items.length);
@@ -114,15 +115,15 @@ function NavigationItem({
 			{/* Background rail */}
 			<div
 				className={cn(
-					"border border-transparent h-[40px] transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] ml-[15px] mr-[15px]  rounded",
+					"border border-transparent h-[40px] transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] ml-[6px] mr-3 rounded-lg",
 					item.isActive && "bg-accent border-border",
 					"group-hover:bg-accent",
-					isExpanded ? "w-[calc(100%-30px)]" : "w-[40px]"
+					isExpanded ? "w-[calc(100%-24px)]" : "w-[40px]"
 				)}
 			/>
 
 			{/* Icon */}
-			<div className="pointer-events-none absolute top-0 left-[15px] w-[40px] h-[40px] flex items-center justify-center">
+			<div className="pointer-events-none absolute top-0 left-[6px] w-[40px] h-[40px] flex items-center justify-center">
 				<div
 					className={cn(
 						"text-foreground transition-colors duration-200",
@@ -136,7 +137,7 @@ function NavigationItem({
 
 			{/* Title + controls row */}
 			{isExpanded && (
-				<div className="absolute top-0 left-[55px] right-[4px] h-[40px] flex items-center gap-1">
+				<div className="absolute top-0 left-[52px] right-[4px] h-[40px] flex items-center gap-1">
 					{/* Title link (only the text navigates) */}
 					<a
 						href={item.url}
@@ -286,6 +287,7 @@ function NavigationSection({
 export function Navigation({
 	sections,
 	isExpanded,
+	onAnyMenuOpenChange,
 }: NavigationProps): JSX.Element {
 	const [expandedItems, setExpandedItems] = React.useState<Set<string>>(
 		new Set()
@@ -310,6 +312,11 @@ export function Navigation({
 		});
 	};
 
+	const handleMenuOpenChange = (open: boolean): void => {
+		setIsAnyMenuOpen(open);
+		onAnyMenuOpenChange?.(open);
+	};
+
 	const effectiveExpanded = !!(isExpanded || isAnyMenuOpen);
 
 	return (
@@ -321,7 +328,7 @@ export function Navigation({
 						expandedItems={expandedItems}
 						isExpanded={effectiveExpanded}
 						section={section}
-						onAnyMenuOpenChange={setIsAnyMenuOpen}
+						onAnyMenuOpenChange={handleMenuOpenChange}
 						onToggle={toggleItem}
 					/>
 				))}

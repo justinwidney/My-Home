@@ -324,7 +324,9 @@ export function MonthPicker({
 				disabled={disabled}
 				size="icon"
 				variant="ghost"
-				onClick={() => navigateMonths(1)}
+				onClick={() => {
+					navigateMonths(1);
+				}}
 			>
 				<ChevronRightIcon className="h-4 w-4" />
 			</Button>

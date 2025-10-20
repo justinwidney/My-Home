@@ -39,7 +39,7 @@ export function TeamSwitcher({
 			modal={false}
 			onOpenChange={(open) => onMenuOpenChange?.(open)}
 		>
-			<div className="group relative h-[70px] w-full">
+			<div className="group relative h-[52px] w-full">
 				{/* Background rail - matches NavigationItem exactly */}
 				<div
 					className={cn(
@@ -54,7 +54,7 @@ export function TeamSwitcher({
 				{/* Logo - matches NavigationItem icon positioning exactly */}
 				<a
 					aria-label={`${activeTeam.name} home`}
-					className="absolute top-1/2 -translate-y-1/2 left-[15px] w-[40px] h-[40px] flex items-center justify-center pointer-events-auto"
+					className="absolute top-1/2 -translate-y-1/2 left-[6px] w-[40px] h-[40px] flex items-center justify-center pointer-events-auto"
 					href="/"
 				>
 					<div className="text-primary flex items-center justify-center rounded-lg size-8">

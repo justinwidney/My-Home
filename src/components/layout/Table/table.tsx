@@ -85,34 +85,3 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
 		</div>
 	);
 }
-
-// Example usage component
-export function TableExample() {
-	return (
-		<Table>
-			<TableHeader>
-				<Button variant="outline" size="sm">
-					Action 1
-				</Button>
-				<Button variant="outline" size="sm">
-					Action 2
-				</Button>
-				<Button variant="default" size="sm">
-					Primary Action
-				</Button>
-			</TableHeader>
-
-			<TableContent>
-				<TableRow>
-					<div className="flex-1">Row 1 Content</div>
-				</TableRow>
-				<TableRow>
-					<div className="flex-1">Row 2 Content</div>
-				</TableRow>
-				<TableRow>
-					<div className="flex-1">Row 3 Content</div>
-				</TableRow>
-			</TableContent>
-		</Table>
-	);
-}

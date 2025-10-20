@@ -37,6 +37,8 @@ import {
 import { TeamSwitcher } from "./TeamSwitcher";
 import { Navigation } from "./MainNavigation";
 import { UserProfile } from "./UserProfile";
+import { Header } from "../Header/Header";
+import { SearchModal } from "@/components/search/SearchModal";
 
 // Sample data for the unified navigation
 const navigationSections = [
@@ -224,7 +226,7 @@ const sampleData = {
 // Complete Sidebar Implementation with unified navigation
 function CompleteSidebar(): JSX.Element {
 	return (
-		<Sidebar className="border-r">
+		<Sidebar className="">
 			<SidebarHeader>
 				<TeamSwitcher teams={sampleData.teams} />
 			</SidebarHeader>
@@ -240,7 +242,7 @@ function CompleteSidebar(): JSX.Element {
 	);
 }
 
-// Main content area
+// Main content area (without header)
 function MainContent({
 	title,
 	description,
@@ -250,7 +252,7 @@ function MainContent({
 }): JSX.Element {
 	return (
 		<SidebarInset>
-			<div className="flex h-[70px] shrink-0 items-center gap-2 border-b px-4">
+			<div className="flex h-[70px] shrink-0 items-center gap-2 border-b px-4 bg-white">
 				<SidebarTrigger />
 				<div className="h-4 w-px bg-border mx-2" />
 				<Breadcrumb>
@@ -315,6 +317,66 @@ function MainContent({
 	);
 }
 
+// Main content area with sectioned header
+function MainContentWithHeader({
+	title,
+	description,
+}: {
+	title: string;
+	description: string;
+}): JSX.Element {
+	return (
+		<SidebarInset>
+			<Header user={sampleData.user} />
+
+			<div className="p-8 max-w-[1200px] mx-auto">
+				<h1 className="text-3xl font-bold mb-4">{title}</h1>
+				<p className="text-muted-foreground mb-8">{description}</p>
+
+				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+					<div className="p-6 bg-white rounded-lg border shadow-sm">
+						<h3 className="font-medium mb-2">Sectioned Header</h3>
+						<p className="text-sm text-muted-foreground">
+							Header sections match the sidebar design with independent white
+							backgrounds.
+						</p>
+					</div>
+					<div className="p-6 bg-white rounded-lg border shadow-sm">
+						<h3 className="font-medium mb-2">Search Bar</h3>
+						<p className="text-sm text-muted-foreground">
+							Quick access search with keyboard shortcut (⌘K).
+						</p>
+					</div>
+					<div className="p-6 bg-white rounded-lg border shadow-sm">
+						<h3 className="font-medium mb-2">Navigation Tabs</h3>
+						<p className="text-sm text-muted-foreground">
+							Switch between different pages using the header tabs.
+						</p>
+					</div>
+					<div className="p-6 bg-white rounded-lg border shadow-sm">
+						<h3 className="font-medium mb-2">Next Step Actions</h3>
+						<p className="text-sm text-muted-foreground">
+							Contextual next step with call-to-action button.
+						</p>
+					</div>
+					<div className="p-6 bg-white rounded-lg border shadow-sm">
+						<h3 className="font-medium mb-2">User Menu</h3>
+						<p className="text-sm text-muted-foreground">
+							Access profile settings and account options from the header.
+						</p>
+					</div>
+					<div className="p-6 bg-white rounded-lg border shadow-sm">
+						<h3 className="font-medium mb-2">Consistent Design</h3>
+						<p className="text-sm text-muted-foreground">
+							Both sidebar and header share the same sectioned design language.
+						</p>
+					</div>
+				</div>
+			</div>
+		</SidebarInset>
+	);
+}
+
 // Complete demo layout
 function DemoLayout(): JSX.Element {
 	return (
@@ -323,6 +385,20 @@ function DemoLayout(): JSX.Element {
 			<MainContent
 				description="Move your mouse towards the sidebar to experience smooth hover interactions. This unified navigation system handles both expandable menu items and items with contextual actions."
 				title="Unified Navigation Sidebar"
+			/>
+		</div>
+	);
+}
+
+// Complete demo layout with sectioned header
+function CompleteLayoutWithHeader(): JSX.Element {
+	return (
+		<div className="flex h-screen bg-gray-50">
+			<SearchModal />
+			<CompleteSidebar />
+			<MainContentWithHeader
+				description="A complete layout system with sectioned sidebar and header. Each component uses independent sections with white backgrounds and rounded borders for a cohesive design."
+				title="Complete Layout with Sectioned Header"
 			/>
 		</div>
 	);
@@ -345,6 +421,7 @@ A unified navigation system that handles both expandable navigation items and it
 - **Flexible Actions**: Items can have either expandable children or dropdown actions (not both)
 - **Smooth Animations**: 200ms cubic-bezier transitions with staggered child reveals
 - **Clean Architecture**: Simple prop-based structure without complex contexts
+- **Sectioned Header**: Matching header design with search, tabs, next step, and user menu
 
 ## Navigation Data Structure
 
@@ -404,6 +481,11 @@ const sections = [
     <UserProfile user={userData} />
   </SidebarFooter>
 </Sidebar>
+
+<SidebarInset>
+  <Header user={userData} />
+  {/* Your content */}
+</SidebarInset>
 \`\`\`
         `,
 			},
@@ -423,6 +505,19 @@ export const Complete: Story = {
 			description: {
 				story:
 					"A complete sidebar with unified navigation handling both expandable menu items and items with dropdown actions. Hover near the sidebar to see the smooth expansion animation.",
+			},
+		},
+	},
+};
+
+export const CompleteWithHeader: Story = {
+	name: "Complete Layout with Header",
+	render: () => <CompleteLayoutWithHeader />,
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"A complete application layout with both sectioned sidebar and header. The header includes search, navigation tabs, next step actions, and user menu - all with matching sectioned design.",
 			},
 		},
 	},
@@ -517,7 +612,7 @@ export const ProjectsOnly: Story = {
 		const projectsOnly = [
 			{
 				title: "Projects",
-				items: navigationSections[1]?.items ?? [], // Get projects from the main data
+				items: navigationSections[1]?.items ?? [],
 			},
 		];
 

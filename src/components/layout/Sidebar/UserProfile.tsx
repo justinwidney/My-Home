@@ -42,21 +42,21 @@ export function UserProfile({
 			modal={false}
 			onOpenChange={(open) => onMenuOpenChange?.(open)}
 		>
-			<div className="group relative h-[48px] w-full">
+			<div className="group relative h-[52px] w-full">
 				{/* Background rail - matches your other components exactly */}
 				<div
 					className={cn(
-						"border border-transparent h-[48px] transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] ml-[15px] mr-[15px] rounded",
+						"border border-transparent h-[40px] transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] ml-[15px] mr-[15px] rounded",
 						"group-hover:bg-accent",
-						isExpanded ? "w-[calc(100%-30px)]" : "w-[40px]",
+						isExpanded ? "w-[calc(100%-24px)]" : "w-[40px]",
 						// Keep it positioned absolutely like other components
-						"absolute top-0"
+						"absolute top-1/2 -translate-y-1/2"
 					)}
 				/>
 
 				{/* Avatar - matches NavigationItem icon positioning exactly */}
-				<div className="pointer-events-none absolute top-0 left-[15px] w-[40px] h-[48px] flex items-center justify-center">
-					<Avatar className="h-8 w-8">
+				<div className="pointer-events-none absolute top-1/2 -translate-y-1/2 left-[6px] w-[40px] h-[40px] flex items-center justify-center">
+					<Avatar className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
 						<AvatarImage alt={user.name} src={user.avatar} />
 						<AvatarFallback>
 							<User size={16} />
